@@ -6,4 +6,6 @@ public final class AuthConstants {
     }
 
     public static final String UNAUTHORIZED="Unauthorized";
+    public static final String USER="User";
+
 }
