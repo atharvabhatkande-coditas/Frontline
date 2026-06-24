@@ -19,9 +19,9 @@ import java.util.List;
 @Table(name = "customer")
 public class Customer extends Audit implements UserDetails {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
 
     @Column(name = "username",unique = true,nullable = false)
     private String username;

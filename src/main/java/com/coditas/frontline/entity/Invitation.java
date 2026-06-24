@@ -1,0 +1,35 @@
+package com.coditas.frontline.entity;
+
+import com.coditas.frontline.enums.RoleType;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.Instant;
+
+@Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Table(name = "customer")
+public class Invitation {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(name = "username")
+    private String username;
+    @Column(name = "code")
+    private String code;
+
+    @Column(name = "expire_at")
+    private Instant expireAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private RoleType role;
+
+    @ManyToOne
+    @JoinColumn(name = "invited_by")
+    private Users invitedBy;
+}
