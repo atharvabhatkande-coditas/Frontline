@@ -11,8 +11,8 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "customer")
-public class RefreshToken {
+@Table(name = "refresh_token")
+public class RefreshToken  extends Audit{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,5 +1,6 @@
 package com.coditas.frontline.security;
 
+import com.coditas.frontline.enums.RoleType;
 import com.coditas.frontline.filter.JwtFilter;
 import com.coditas.frontline.service.CustomUserDetailService;
 import com.coditas.frontline.service.CustomerService;
@@ -19,6 +20,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static com.coditas.frontline.constants.EndPoints.AUTH;
+import static com.coditas.frontline.constants.EndPoints.INVITATION;
+
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -29,7 +33,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth->auth
-                        .anyRequest().permitAll()
+                        .requestMatchers(AUTH).permitAll()
+                        .requestMatchers(INVITATION).hasAnyRole(RoleType.AGENT.name(),RoleType.MANAGER.name())
+                        .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex ->
                         ex.authenticationEntryPoint((request, response, authException) ->
@@ -46,6 +52,7 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Primary
     public UserDetailsService customUserDetailsService() {
         return customUserDetailService;
     }
@@ -66,7 +73,6 @@ public class SecurityConfig {
 
 
     @Bean
-    @Primary
     public AuthenticationManager customerAuthenticationManager(UserDetailsService customerUserDetailsService, PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(customerUserDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder);

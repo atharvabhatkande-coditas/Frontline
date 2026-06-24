@@ -12,8 +12,8 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "customer")
-public class Invitation {
+@Table(name = "invitation")
+public class Invitation extends Audit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
