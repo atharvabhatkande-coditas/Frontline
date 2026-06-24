@@ -13,6 +13,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,6 +35,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private final CustomerService customerService;
     private final CustomUserDetailService customUserDetailService;
     @Override
+    @NullMarked
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader("Authorization");
         String username = null;
@@ -58,7 +60,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             try {
-
                 UserDetails userDetails = getUserDetails(roleType, username);
                 if(jwtUtil.validateToken(userDetails,username,token)){
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -72,16 +73,17 @@ public class JwtFilter extends OncePerRequestFilter {
                 response.getWriter().write(objectMapper.writeValueAsString(applicationResponse));
                 return;
             }
-            filterChain.doFilter(request, response);
         }
+        filterChain.doFilter(request, response);
 
     }
-
     private UserDetails getUserDetails(String roleType, String username) {
-            if (Objects.equals(roleType, "customer")) {
-                return customerService.loadUserByUsername(username);
-            } else {
-                return customUserDetailService.loadUserByUsername(username);
-            }
+        if (Objects.equals(roleType, "customer")) {
+            return customerService.loadUserByUsername(username);
+        } else {
+            return customUserDetailService.loadUserByUsername(username);
         }
+    }
+
+
 }

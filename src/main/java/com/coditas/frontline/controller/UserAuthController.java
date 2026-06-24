@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth/user")
+
 public class UserAuthController {
     private final UserAuthService userAuthService;
 
@@ -29,7 +30,7 @@ public class UserAuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApplicationResponse<SingleResponse>>registerNewPlatformUser(@RequestBody RegisterRequest registerRequest){
+    public ResponseEntity<ApplicationResponse<SingleResponse>>registerNewPlatformUser(@Valid @RequestBody RegisterRequest registerRequest){
         ApplicationResponse<SingleResponse>applicationResponse=new ApplicationResponse<>(userAuthService.registerPlatformUser(registerRequest));
         return ResponseEntity.status(HttpStatus.CREATED).body(applicationResponse);
     }

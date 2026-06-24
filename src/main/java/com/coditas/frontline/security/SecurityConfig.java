@@ -20,8 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.coditas.frontline.constants.EndPoints.AUTH;
-import static com.coditas.frontline.constants.EndPoints.INVITATION;
+import static com.coditas.frontline.constants.EndPoints.*;
 
 @Configuration
 @RequiredArgsConstructor
@@ -34,6 +33,8 @@ public class SecurityConfig {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth->auth
                         .requestMatchers(AUTH).permitAll()
+                        .requestMatchers(SWAGGER1,SWAGGER2,SWAGGER3).permitAll()
+
                         .requestMatchers(INVITATION).hasAnyRole(RoleType.AGENT.name(),RoleType.MANAGER.name())
                         .anyRequest().authenticated()
                 )

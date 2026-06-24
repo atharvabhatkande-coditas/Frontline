@@ -40,6 +40,7 @@ public class UserAuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final InvitationRepository invitationRepository;
     private final PasswordEncoder passwordEncoder;
+
     @Transactional
     public LoginResponseTokens loginPlatformUser(LoginRequest request) {
         try{
