@@ -12,4 +12,7 @@ public final  class EndPoints {
     public static final String SWAGGER2="/v3/api-docs/**";
     public static final String SWAGGER3="/swagger-ui.html/**";
 
+
+    public static final String TICKET="/ticket/**";
+
 }
