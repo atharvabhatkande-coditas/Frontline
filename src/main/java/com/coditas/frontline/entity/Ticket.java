@@ -19,6 +19,9 @@ public class Ticket extends Audit{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "subject")
+    private String subject;
+
     @Column(name = "description")
     private String description;
 
@@ -34,7 +37,7 @@ public class Ticket extends Audit{
     @Column(name = "priority")
     private Priority priority;
 
-    @Column(name = "ticket_no")
+    @Column(name = "ticket_number")
     private String ticketNo;
 
     @Column(name = "resolved_at")

@@ -20,7 +20,7 @@ public class TicketAssignment  extends Audit{
 
     @ManyToOne
     @JoinColumn(name = "agent_id")
-    private Users agentId;
+    private Users agent;
 
     @ManyToOne
     @JoinColumn(name = "ticket_id")

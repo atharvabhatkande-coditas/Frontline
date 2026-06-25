@@ -34,8 +34,15 @@ public class SecurityConfig {
                         .requestMatchers(AUTH).permitAll()
                         .requestMatchers(CUSTOMER_AUTH).permitAll()
                         .requestMatchers(SWAGGER1,SWAGGER2,SWAGGER3).permitAll()
+                        .requestMatchers("/ws/**").permitAll()
+
+
 
                         .requestMatchers(INVITATION).hasAnyRole(RoleType.AGENT.name(),RoleType.MANAGER.name(),RoleType.SUPER_ADMIN.name())
+
+                       //customer
+                        .requestMatchers(TICKET).hasAnyRole(RoleType.AGENT.name(),RoleType.MANAGER.name(),RoleType.SUPER_ADMIN.name(),RoleType.CUSTOMER.name())
+
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex ->
