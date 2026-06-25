@@ -24,14 +24,14 @@ public class UserAuthController {
 
     @PostMapping("/login")
     public ResponseEntity<ApplicationResponse<LoginResponseTokens>>loginUser(@Valid @RequestBody LoginRequest loginRequest){
-        ApplicationResponse<LoginResponseTokens>applicationResponse=new ApplicationResponse<>(userAuthService.loginPlatformUser(loginRequest));
+        ApplicationResponse<LoginResponseTokens>applicationResponse=new ApplicationResponse<>(userAuthService.loginUser(loginRequest));
         return new ResponseEntity<>(applicationResponse, HttpStatus.OK);
 
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApplicationResponse<SingleResponse>>registerNewPlatformUser(@Valid @RequestBody RegisterRequest registerRequest){
-        ApplicationResponse<SingleResponse>applicationResponse=new ApplicationResponse<>(userAuthService.registerPlatformUser(registerRequest));
+    public ResponseEntity<ApplicationResponse<SingleResponse>>registerUser(@Valid @RequestBody RegisterRequest registerRequest){
+        ApplicationResponse<SingleResponse>applicationResponse=new ApplicationResponse<>(userAuthService.registerUser(registerRequest));
         return ResponseEntity.status(HttpStatus.CREATED).body(applicationResponse);
     }
     @PostMapping("/logout")
