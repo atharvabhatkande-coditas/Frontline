@@ -10,4 +10,6 @@ public final class TicketConstants {
 
 
     public static final String TICKET_NOT_ASSIGNED="Ticket Not Assigned";
+    public static final String TICKET_ALREADY_ASSIGNED="Ticket Already Assigned";
+    public static final String TICKET_ASSIGNED="Ticket Assigned";
 }

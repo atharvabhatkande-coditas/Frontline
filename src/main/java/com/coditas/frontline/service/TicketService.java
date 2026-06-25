@@ -66,7 +66,7 @@ public class TicketService {
                 .priority(newTicket.getPriority().name())
                 .status(newTicket.getTicketStatus().name())
                 .build();
-    notificationService.publishTicketCreated(event);
+        notificationService.publishTicketCreated(event);
 
         return SingleResponse.builder()
                 .message(TICKET_OPENED)
