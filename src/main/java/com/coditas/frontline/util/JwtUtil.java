@@ -48,8 +48,8 @@ public class JwtUtil {
     }
 
 
-    public LoginResponseTokens generateTokens(Users user,String roleType) {
-        String accessToken=generateJwtToken(user.getUsername(),roleType,user.getRole());
+    public LoginResponseTokens generateTokens(UserDetails user,String roleType,RoleType role) {
+        String accessToken=generateJwtToken(user.getUsername(),roleType,role);
         String refreshToken=generateRefreshToken();
 
         return LoginResponseTokens.builder()

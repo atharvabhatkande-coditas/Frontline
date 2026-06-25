@@ -42,7 +42,7 @@ public class UserAuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public LoginResponseTokens loginPlatformUser(LoginRequest request) {
+    public LoginResponseTokens loginUser(LoginRequest request) {
         try{
                 Authentication authentication=userAuthenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword()));
@@ -52,7 +52,7 @@ public class UserAuthService {
                 throw new AuthenticationException(USER+NOT_FOUND);
             }
 
-            LoginResponseTokens loginResponseTokens= jwtUtil.generateTokens(user,"employee");
+            LoginResponseTokens loginResponseTokens= jwtUtil.generateTokens(user,"employee",user.getRole());
             RefreshToken refreshToken=RefreshToken.builder()
                     .token(loginResponseTokens.getRefreshToken())
                     .username(user.getUsername())
@@ -69,7 +69,7 @@ public class UserAuthService {
     }
     @Transactional
 
-    public SingleResponse registerPlatformUser(RegisterRequest registerRequest) {
+    public SingleResponse registerUser(RegisterRequest registerRequest) {
 
         Users user=customUsersRepository.findByUsername(registerRequest.getUsername())
                 .orElse(null);

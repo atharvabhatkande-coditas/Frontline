@@ -10,4 +10,6 @@ public final class ValidationConstants {
     public static final String EMAIL="Must be a valid email format";
     public static final String PASSWORD_SIZE="Password should be min 6 char long";
 
+    public static final String PHONE_NUMBER="Phone Number should be 10 Digits";
+
 }
