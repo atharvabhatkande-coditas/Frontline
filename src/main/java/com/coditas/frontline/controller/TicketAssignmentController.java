@@ -42,5 +42,11 @@ public class TicketAssignmentController {
 
     }
 
+    @PostMapping("/escalate")
+    public ResponseEntity<ApplicationResponse<SingleResponse>>reAssignTicket(@Valid @RequestBody TicketAssignRequest ticketAssignRequest, @AuthenticationPrincipal Users assignedBy){
+        ApplicationResponse<SingleResponse>applicationResponse=new ApplicationResponse<>(ticketAssignmentService.reAssignTicket(ticketAssignRequest,assignedBy));
+        return ResponseEntity.status(HttpStatus.CREATED).body(applicationResponse);
+    }
+
 
 }

@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -41,7 +42,22 @@ public class SecurityConfig {
                         .requestMatchers(INVITATION).hasAnyRole(RoleType.AGENT.name(),RoleType.MANAGER.name(),RoleType.SUPER_ADMIN.name())
 
                        //customer
-                        .requestMatchers(TICKET).hasAnyRole(RoleType.AGENT.name(),RoleType.MANAGER.name(),RoleType.SUPER_ADMIN.name(),RoleType.CUSTOMER.name())
+                        .requestMatchers(HttpMethod.POST,TICKET).hasAnyRole(RoleType.AGENT.name(),RoleType.MANAGER.name(),RoleType.SUPER_ADMIN.name(),RoleType.CUSTOMER.name())
+                        .requestMatchers(HttpMethod.GET,TICKET).hasAnyRole(RoleType.AGENT.name(),RoleType.MANAGER.name(),RoleType.SUPER_ADMIN.name(),RoleType.CUSTOMER.name())
+
+                        .requestMatchers(TICKET_RATING).hasAnyRole(RoleType.AGENT.name(),RoleType.MANAGER.name(),RoleType.SUPER_ADMIN.name(),RoleType.CUSTOMER.name())
+
+                        //manager
+                        .requestMatchers(HttpMethod.PATCH,TICKET).hasAnyRole(RoleType.MANAGER.name(),RoleType.SUPER_ADMIN.name())
+
+                        .requestMatchers(USER).hasAnyRole(RoleType.MANAGER.name(),RoleType.SUPER_ADMIN.name())
+
+                        .requestMatchers(HttpMethod.POST,TICKET_ASSIGNMENT).hasAnyRole(RoleType.MANAGER.name(),RoleType.SUPER_ADMIN.name())
+
+                        //agent
+                        .requestMatchers(HttpMethod.GET,TICKET_ASSIGNMENT).hasAnyRole(RoleType.MANAGER.name(),RoleType.SUPER_ADMIN.name(),RoleType.AGENT.name())
+
+
 
                         .anyRequest().authenticated()
                 )

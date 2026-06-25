@@ -2,6 +2,7 @@ package com.coditas.frontline.service;
 
 import com.coditas.frontline.constants.AuthConstants;
 import com.coditas.frontline.dto.request.OpenTicketRequest;
+import com.coditas.frontline.dto.request.TicketUpdateRequest;
 import com.coditas.frontline.dto.response.*;
 import com.coditas.frontline.entity.Customer;
 import com.coditas.frontline.entity.Ticket;
@@ -16,6 +17,7 @@ import com.coditas.frontline.mapper.TicketMapper;
 import com.coditas.frontline.repository.TicketAssignmentRepository;
 import com.coditas.frontline.repository.TicketRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -118,5 +120,17 @@ public class TicketService {
             return new PageResponse<>(allTicketResponses,page,size,tickets.getTotalElements(),tickets.getTotalPages(),tickets.isLast());
         }
 
+    }
+    @Transactional
+    public SingleResponse setPriority(@Valid TicketUpdateRequest ticketUpdateRequest) {
+
+        Ticket ticket=ticketRepository.findByTicketNo(ticketUpdateRequest.getTicketNo())
+                .orElseThrow(()->new NotFoundException(TICKET+NOT_FOUND));
+
+        ticket.setPriority(ticketUpdateRequest.getPriority());
+        ticketRepository.save(ticket);
+        return SingleResponse.builder()
+                .message(TICKET_UPDATED)
+                .build();
     }
 }

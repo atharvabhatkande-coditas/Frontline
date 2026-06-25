@@ -1,8 +1,8 @@
 package com.coditas.frontline.service;
 
+import com.coditas.frontline.dto.request.EmailRequest;
 import com.coditas.frontline.dto.request.TicketAssignRequest;
 import com.coditas.frontline.dto.response.AgentAssignedTaskResponse;
-import com.coditas.frontline.dto.response.ErrorResponse;
 import com.coditas.frontline.dto.response.PageResponse;
 import com.coditas.frontline.dto.response.SingleResponse;
 import com.coditas.frontline.entity.Ticket;
@@ -38,6 +38,7 @@ public class TicketAssignmentService {
     private final TicketAssignmentRepository ticketAssignmentRepository;
     private final CustomUsersRepository customUsersRepository;
     private final TicketRepository ticketRepository;
+    private final EmailService emailService;
 
     private final UserMapper userMapper;
 
@@ -63,11 +64,16 @@ public class TicketAssignmentService {
                 .assignedBy(assignedBy)
                 .isCurrentAgent(true)
                 .build();
-
+        EmailRequest emailRequest=EmailRequest.builder()
+                .message(AGENT_ASSIGNED_MAIL)
+                .email(ticket.getCustomer().getUsername())
+                .build();
+        String message=emailService.sendEmail(emailRequest);
         ticketAssignmentRepository.save(newTicketAssignment);
 
+
         return SingleResponse.builder()
-                .message(TICKET_ASSIGNED)
+                .message(TICKET_ASSIGNED+message)
                 .build();
     }
 
@@ -83,5 +89,16 @@ public class TicketAssignmentService {
         List<AgentAssignedTaskResponse>assignedTaskResponses= ticketAssignmentPage.stream().map(userMapper::assignedTaskResponse).toList();
 
         return new PageResponse<>(assignedTaskResponses,page,size,ticketAssignmentPage.getTotalElements(),ticketAssignmentPage.getTotalPages(),ticketAssignmentPage.isLast());
+    }
+    @Transactional
+    public SingleResponse reAssignTicket(@Valid TicketAssignRequest ticketAssignRequest, Users assignedBy) {
+
+        TicketAssignment ticketAssignment=ticketAssignmentRepository.findByTicket_TicketNoAndIsCurrentAgent(ticketAssignRequest.getTicketNo(),true)
+                .orElseThrow(()->new NotFoundException(TICKET_NOT_ASSIGNED));
+
+        ticketAssignment.setCurrentAgent(false);
+        ticketAssignmentRepository.save(ticketAssignment);
+       return  assignTicketToAgent(ticketAssignRequest,assignedBy);
+
     }
 }
