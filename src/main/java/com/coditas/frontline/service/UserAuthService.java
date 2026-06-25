@@ -44,7 +44,7 @@ public class UserAuthService {
     @Transactional
     public LoginResponseTokens loginPlatformUser(LoginRequest request) {
         try{
-            Authentication authentication=userAuthenticationManager
+                Authentication authentication=userAuthenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword()));
 
             Users user=(Users) authentication.getPrincipal();
@@ -67,6 +67,7 @@ public class UserAuthService {
         }
 
     }
+    @Transactional
 
     public SingleResponse registerPlatformUser(RegisterRequest registerRequest) {
 

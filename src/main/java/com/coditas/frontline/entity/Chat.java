@@ -17,7 +17,7 @@ public class Chat extends Audit{
 
     @ManyToOne
     @JoinColumn(name = "ticket_id")
-    private Tickets ticket;
+    private Ticket ticket;
     @Column(name = "is_active")
     private boolean isActive;
 

@@ -32,4 +32,6 @@ public class Invitation extends Audit {
     @ManyToOne
     @JoinColumn(name = "invited_by")
     private Users invitedBy;
+
+
 }

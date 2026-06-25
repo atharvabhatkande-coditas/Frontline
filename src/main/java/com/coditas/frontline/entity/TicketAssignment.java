@@ -24,15 +24,11 @@ public class TicketAssignment  extends Audit{
 
     @ManyToOne
     @JoinColumn(name = "ticket_id")
-    private Tickets ticket;
+    private Ticket ticket;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "assignment_status")
     private TicketAssignmentStatus ticketAssignmentStatus;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "priority")
-    private Priority priority;
 
     @ManyToOne
     @JoinColumn(name = "assigned_by")

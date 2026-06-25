@@ -19,11 +19,11 @@ public class CustomerFeedBack extends Audit{
 
     @ManyToOne
     @JoinColumn(name = "ticket_id")
-    private Tickets ticket;
+    private Ticket ticket;
 
     @Column(name = "description")
     private String description;
 
     @Column(name = "rating")
-    private Double rating;
+    private Integer rating;
 }

@@ -2,6 +2,7 @@ package com.coditas.frontline.dto.response;
 
 import lombok.*;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 public class ErrorResponse {
 
     private String message;
-    private LocalDateTime time;
+    private Instant time;
     private Integer statusCode;
 
     public ErrorResponse(String message, Integer statusCode) {

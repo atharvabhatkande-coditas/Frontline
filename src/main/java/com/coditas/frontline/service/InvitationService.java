@@ -41,7 +41,11 @@ public class InvitationService {
             throw new AuthenticationException(UNAUTHORIZED);
         }
 
-        String code=UUID.randomUUID().toString().replace("-","").substring(0,6);
+        String code=UUID.randomUUID()
+                .toString()
+                .replace("-","")
+                .substring(0,6)
+                .toUpperCase();
         SimpleMailMessage simpleMailMessage=new SimpleMailMessage();
         simpleMailMessage.setSubject("Invitation Link");
         simpleMailMessage.setTo(invitationRequest.getEmail());
@@ -71,6 +75,9 @@ public class InvitationService {
             return false;
         }
         if(Objects.equals(userRole,RoleType.AGENT.name()) && Objects.equals(invitedRole,RoleType.AGENT.name())){
+            return false;
+        }
+        if(Objects.equals(userRole,RoleType.SUPER_ADMIN.name()) && Objects.equals(invitedRole,RoleType.SUPER_ADMIN.name())){
             return false;
         }
        return true;

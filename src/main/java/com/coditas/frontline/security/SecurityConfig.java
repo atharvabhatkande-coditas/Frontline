@@ -35,7 +35,7 @@ public class SecurityConfig {
                         .requestMatchers(AUTH).permitAll()
                         .requestMatchers(SWAGGER1,SWAGGER2,SWAGGER3).permitAll()
 
-                        .requestMatchers(INVITATION).hasAnyRole(RoleType.AGENT.name(),RoleType.MANAGER.name())
+                        .requestMatchers(INVITATION).hasAnyRole(RoleType.AGENT.name(),RoleType.MANAGER.name(),RoleType.SUPER_ADMIN.name())
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex ->

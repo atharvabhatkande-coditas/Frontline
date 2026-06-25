@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
-abstract class Audit {
+public abstract class Audit {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

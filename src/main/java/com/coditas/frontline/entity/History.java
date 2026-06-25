@@ -28,4 +28,8 @@ public class History extends Audit{
     @JoinColumn(name = "agent_id")
     private Users agent;
 
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+
 }
