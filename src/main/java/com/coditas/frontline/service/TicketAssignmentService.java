@@ -84,4 +84,15 @@ public class TicketAssignmentService {
 
         return new PageResponse<>(assignedTaskResponses,page,size,ticketAssignmentPage.getTotalElements(),ticketAssignmentPage.getTotalPages(),ticketAssignmentPage.isLast());
     }
+    @Transactional
+    public SingleResponse reAssignTicket(@Valid TicketAssignRequest ticketAssignRequest, Users assignedBy) {
+
+        TicketAssignment ticketAssignment=ticketAssignmentRepository.findByTicket_TicketNoAndIsCurrentAgent(ticketAssignRequest.getTicketNo(),true)
+                .orElseThrow(()->new NotFoundException(TICKET_NOT_ASSIGNED));
+
+        ticketAssignment.setCurrentAgent(false);
+        ticketAssignmentRepository.save(ticketAssignment);
+       return  assignTicketToAgent(ticketAssignRequest,assignedBy);
+
+    }
 }

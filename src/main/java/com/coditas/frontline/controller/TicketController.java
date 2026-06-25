@@ -1,6 +1,7 @@
 package com.coditas.frontline.controller;
 
 import com.coditas.frontline.dto.request.OpenTicketRequest;
+import com.coditas.frontline.dto.request.TicketUpdateRequest;
 import com.coditas.frontline.dto.response.*;
 import com.coditas.frontline.entity.Customer;
 import com.coditas.frontline.service.TicketService;
@@ -45,6 +46,15 @@ public class TicketController {
         ApplicationResponse<PageResponse<AllTicketResponse>>applicationResponse=new ApplicationResponse<>(ticketService.getAllTicket(customer,status,page,size,name,sortDirection));
         return ResponseEntity.status(HttpStatus.OK).body(applicationResponse);
     }
+
+
+
+    @PatchMapping("set-priority")
+    public ResponseEntity<ApplicationResponse<SingleResponse>>setPriority(@Valid @RequestBody TicketUpdateRequest ticketUpdateRequest){
+        ApplicationResponse<SingleResponse>applicationResponse=new ApplicationResponse<>(ticketService.setPriority(ticketUpdateRequest));
+        return ResponseEntity.status(HttpStatus.OK).body(applicationResponse);
+    }
+
 
 
 
