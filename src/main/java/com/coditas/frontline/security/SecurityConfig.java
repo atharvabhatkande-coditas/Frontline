@@ -34,6 +34,7 @@ public class SecurityConfig {
                         .requestMatchers(AUTH).permitAll()
                         .requestMatchers(CUSTOMER_AUTH).permitAll()
                         .requestMatchers(SWAGGER1,SWAGGER2,SWAGGER3).permitAll()
+                        .requestMatchers("/ws/**").permitAll()
 
 
 

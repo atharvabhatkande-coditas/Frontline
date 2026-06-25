@@ -6,7 +6,9 @@ import com.coditas.frontline.dto.response.*;
 import com.coditas.frontline.entity.Customer;
 import com.coditas.frontline.entity.Ticket;
 import com.coditas.frontline.entity.TicketAssignment;
+import com.coditas.frontline.enums.Priority;
 import com.coditas.frontline.enums.TicketStatus;
+import com.coditas.frontline.events.TicketCreatedEvent;
 import com.coditas.frontline.exception.AlreadyExistException;
 import com.coditas.frontline.exception.AuthorizationException;
 import com.coditas.frontline.exception.NotFoundException;
@@ -35,6 +37,7 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final TicketAssignmentRepository ticketAssignmentRepository;
     private final TicketMapper ticketMapper;
+    private final NotificationService notificationService;
 
     @Transactional
     public SingleResponse openTicket( OpenTicketRequest openTicketRequest, Customer customer) {
@@ -50,11 +53,20 @@ public class TicketService {
                 .description(openTicketRequest.getDescription())
                 .ticketStatus(TicketStatus.OPEN)
                 .customer(customer)
-                .priority(openTicketRequest.getPriority())
+                .priority(Priority.LOW)
                 .ticketNo(ticketNo)
                 .build();
 
         ticketRepository.save(newTicket);
+
+        TicketCreatedEvent event=TicketCreatedEvent.builder()
+                .ticketId(newTicket.getId())
+                .ticketNumber(newTicket.getTicketNo())
+                .subject(newTicket.getSubject())
+                .priority(newTicket.getPriority().name())
+                .status(newTicket.getTicketStatus().name())
+                .build();
+    notificationService.publishTicketCreated(event);
 
         return SingleResponse.builder()
                 .message(TICKET_OPENED)
