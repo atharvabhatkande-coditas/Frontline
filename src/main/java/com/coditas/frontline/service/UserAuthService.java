@@ -118,7 +118,7 @@ public class UserAuthService {
                 .accessToken(accessToken)
                 .build();
     }
-
+    @Transactional
     public SingleResponse logoutUser(Users user, String token) {
         RefreshToken refreshToken=refreshTokenRepository.findByUsernameAndToken(user.getUsername(),token)
                 .orElseThrow(()-> new NotFoundException(LOGIN_AGAIN));
