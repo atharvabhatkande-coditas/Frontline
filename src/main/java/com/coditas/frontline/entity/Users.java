@@ -1,6 +1,7 @@
 package com.coditas.frontline.entity;
 
 import com.coditas.frontline.enums.RoleType;
+import com.coditas.frontline.enums.TeamType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,6 +32,10 @@ public class Users extends Audit implements UserDetails {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private RoleType role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "team")
+    private TeamType team;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

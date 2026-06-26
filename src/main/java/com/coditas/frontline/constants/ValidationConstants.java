@@ -12,4 +12,7 @@ public final class ValidationConstants {
 
     public static final String PHONE_NUMBER="Phone Number should be 10 Digits";
 
+    public static final String MAX="Maximum Rating is 5";
+    public static final String MIN="Minimum Rating is 5";
+
 }

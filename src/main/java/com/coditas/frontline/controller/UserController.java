@@ -28,4 +28,6 @@ public class UserController {
         ApplicationResponse<PageResponse<AgentResponse>>applicationResponse=new ApplicationResponse<>(userService.getAllAgents(page,size,name,sortDirection));
         return ResponseEntity.status(HttpStatus.OK).body(applicationResponse);
     }
+
+
 }

@@ -1,6 +1,7 @@
 package com.coditas.frontline.entity;
 
 import com.coditas.frontline.enums.RoleType;
+import com.coditas.frontline.enums.TeamType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,6 +29,10 @@ public class Invitation extends Audit {
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private RoleType role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "team")
+    private TeamType team;
 
     @ManyToOne
     @JoinColumn(name = "invited_by")

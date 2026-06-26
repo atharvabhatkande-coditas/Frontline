@@ -1,9 +1,9 @@
 package com.coditas.frontline.controller;
 
-import com.coditas.frontline.dto.request.OpenTicketRequest;
-import com.coditas.frontline.dto.request.TicketUpdateRequest;
+import com.coditas.frontline.dto.request.*;
 import com.coditas.frontline.dto.response.*;
 import com.coditas.frontline.entity.Customer;
+import com.coditas.frontline.entity.Users;
 import com.coditas.frontline.service.TicketService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -48,12 +48,31 @@ public class TicketController {
     }
 
 
-
-    @PatchMapping("set-priority")
+    @PatchMapping("/set-priority")
     public ResponseEntity<ApplicationResponse<SingleResponse>>setPriority(@Valid @RequestBody TicketUpdateRequest ticketUpdateRequest){
         ApplicationResponse<SingleResponse>applicationResponse=new ApplicationResponse<>(ticketService.setPriority(ticketUpdateRequest));
         return ResponseEntity.status(HttpStatus.OK).body(applicationResponse);
     }
+
+    @PostMapping("/re-open")
+    public ResponseEntity<ApplicationResponse<SingleResponse>>reOpenTicket(@Valid @RequestBody ReOpenTicketRequest reOpenTicketRequest){
+        ApplicationResponse<SingleResponse>applicationResponse=new ApplicationResponse<>(ticketService.reOpenTicket(reOpenTicketRequest));
+        return ResponseEntity.status(HttpStatus.OK).body(applicationResponse);
+    }
+
+    @PatchMapping("/update-status")
+    public ResponseEntity<ApplicationResponse<SingleResponse>>updateStatus(@Valid @RequestBody TicketStatusUpdateRequest ticketStatusUpdateRequest, @AuthenticationPrincipal Users user){
+        ApplicationResponse<SingleResponse>applicationResponse=new ApplicationResponse<>(ticketService.updateStatus(ticketStatusUpdateRequest,user));
+        return ResponseEntity.status(HttpStatus.OK).body(applicationResponse);
+    }
+
+
+    @PatchMapping("/resolve")
+    public ResponseEntity<ApplicationResponse<SingleResponse>>resolveTicket(@Valid @RequestBody TicketResolveRequest ticketStatusUpdateRequest, @AuthenticationPrincipal Users user){
+        ApplicationResponse<SingleResponse>applicationResponse=new ApplicationResponse<>(ticketService.resolveTicket(ticketStatusUpdateRequest,user));
+        return ResponseEntity.status(HttpStatus.OK).body(applicationResponse);
+    }
+
 
 
 

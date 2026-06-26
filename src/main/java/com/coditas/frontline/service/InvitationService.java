@@ -59,6 +59,7 @@ public class InvitationService {
                 .expireAt(Instant.now().plusSeconds(3000))
                 .invitedBy(invitedBy)
                 .role(invitationRequest.getRole())
+                .team(invitationRequest.getTeam())
                 .build();
         invitationRepository.save(invitation);
         return InvitationResponse.builder()

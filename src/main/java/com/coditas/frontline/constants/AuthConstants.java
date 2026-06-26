@@ -25,6 +25,8 @@ public final class AuthConstants {
     public static final String INVITATION_LINK="https://coming-revivable-scandal.ngrok-free.dev/frontline/v1/auth/register";
     public static final String EMAIL_SENT="Invitation Sent Successfully";
 
+    public static final String PROMPT="You are a customer support agents copilot which helps the support agent fetch customer related data. When asked to draft a reply for a fix take the subject and description from the tool call and give proper solution for the issue ";
+
 
 
 }

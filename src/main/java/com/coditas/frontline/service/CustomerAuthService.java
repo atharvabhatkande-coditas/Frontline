@@ -10,6 +10,7 @@ import com.coditas.frontline.entity.Customer;
 import com.coditas.frontline.entity.Invitation;
 import com.coditas.frontline.entity.RefreshToken;
 import com.coditas.frontline.entity.Users;
+import com.coditas.frontline.enums.RoleType;
 import com.coditas.frontline.exception.AlreadyExistException;
 import com.coditas.frontline.exception.AuthenticationException;
 import com.coditas.frontline.exception.NotFoundException;
@@ -74,7 +75,6 @@ public class CustomerAuthService {
 
     }
     @Transactional
-
     public SingleResponse registerCustomer(CustomerRegisterRequest registerRequest) {
 
         Customer customer=customerRepository.findByUsername(registerRequest.getUsername())
@@ -82,21 +82,11 @@ public class CustomerAuthService {
         if(!Objects.isNull(customer)){
             throw new AlreadyExistException(USER+EXIST);
         }
-        Invitation invitation=invitationRepository.findByUsernameAndCode(registerRequest.getUsername(), registerRequest.getCode())
-                .orElseThrow(()->new AuthenticationException(VERIFY_CODE));
-
-        if(!Objects.equals(invitation.getCode(),registerRequest.getCode())){
-            throw new AuthenticationException(VERIFY_CODE);
-        }
-        if(invitation.getExpireAt().isBefore(Instant.now())){
-            throw new AuthenticationException(VERIFY_CODE);
-        }
-
         Customer newCustomer=Customer.builder()
                 .username(registerRequest.getUsername())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .isEnabled(true)
-                .role(invitation.getRole())
+                .role(RoleType.CUSTOMER)
                 .firstName(registerRequest.getFirstName())
                 .lastName(registerRequest.getLastName())
                 .phoneNumber(registerRequest.getPhoneNumber())
@@ -127,6 +117,7 @@ public class CustomerAuthService {
                 .build();
     }
 
+    @Transactional
     public SingleResponse logoutUser(Users user, String token) {
         RefreshToken refreshToken=refreshTokenRepository.findByUsernameAndToken(user.getUsername(),token)
                 .orElseThrow(()-> new NotFoundException(LOGIN_AGAIN));

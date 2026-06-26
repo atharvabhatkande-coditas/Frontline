@@ -2,14 +2,18 @@ package com.coditas.frontline.service;
 
 import com.coditas.frontline.dto.request.EmailRequest;
 import com.coditas.frontline.dto.request.TicketAssignRequest;
+import com.coditas.frontline.dto.request.TicketAssignmentStatusUpdate;
 import com.coditas.frontline.dto.response.AgentAssignedTaskResponse;
 import com.coditas.frontline.dto.response.PageResponse;
 import com.coditas.frontline.dto.response.SingleResponse;
 import com.coditas.frontline.entity.Ticket;
 import com.coditas.frontline.entity.TicketAssignment;
 import com.coditas.frontline.entity.Users;
+import com.coditas.frontline.enums.Priority;
+import com.coditas.frontline.enums.RoleType;
 import com.coditas.frontline.enums.TicketAssignmentStatus;
 import com.coditas.frontline.exception.AlreadyExistException;
+import com.coditas.frontline.exception.AuthorizationException;
 import com.coditas.frontline.exception.NotFoundException;
 import com.coditas.frontline.mapper.UserMapper;
 import com.coditas.frontline.repository.CustomUsersRepository;
@@ -22,12 +26,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
+import static com.coditas.frontline.constants.AuthConstants.UNAUTHORIZED;
 import static com.coditas.frontline.constants.ExceptionConstants.NOT_FOUND;
 import static com.coditas.frontline.constants.TicketConstants.*;
 import static com.coditas.frontline.enums.RoleType.AGENT;
@@ -48,6 +54,12 @@ public class TicketAssignmentService {
                 .orElse(null);
 
         if(!Objects.isNull(ticketAssignment)){
+            throw new AlreadyExistException(TICKET_ALREADY_ASSIGNED);
+        }
+
+        TicketAssignment lastAssigned=ticketAssignmentRepository.findByTicket_TicketNoAndIsCurrentAgent(ticketAssignRequest.getTicketNo(),true)
+                .orElse(null);
+        if(!Objects.isNull(lastAssigned)){
             throw new AlreadyExistException(TICKET_ALREADY_ASSIGNED);
         }
 
@@ -77,21 +89,26 @@ public class TicketAssignmentService {
                 .build();
     }
 
-    public PageResponse<AgentAssignedTaskResponse> getAssignedTasks(Users agent, int page, int size, String name, String sortDirection) {
+    public PageResponse<AgentAssignedTaskResponse> getAssignedTasks(Users agent, int page, int size, String name, String sortDirection,Long agentId) {
+
+       if(!Objects.equals(agent.getRole().name(), RoleType.MANAGER.name()) && !Objects.equals(agent.getId(),agentId)){
+            throw new AuthorizationException(UNAUTHORIZED);
+            }
+
 
         Sort sort =  sortDirection.equalsIgnoreCase("asc")
                 ?Sort.by(name).ascending()
                 : Sort.by(name).descending();
         Pageable pageable= PageRequest.of(page,size,sort);
 
-        Page<TicketAssignment> ticketAssignmentPage=ticketAssignmentRepository.findByAgent(agent,pageable);
+        Page<TicketAssignment> ticketAssignmentPage=ticketAssignmentRepository.findByAgent_Id(agentId,pageable);
 
         List<AgentAssignedTaskResponse>assignedTaskResponses= ticketAssignmentPage.stream().map(userMapper::assignedTaskResponse).toList();
 
         return new PageResponse<>(assignedTaskResponses,page,size,ticketAssignmentPage.getTotalElements(),ticketAssignmentPage.getTotalPages(),ticketAssignmentPage.isLast());
     }
     @Transactional
-    public SingleResponse reAssignTicket(@Valid TicketAssignRequest ticketAssignRequest, Users assignedBy) {
+    public SingleResponse reAssignTicket(TicketAssignRequest ticketAssignRequest, Users assignedBy) {
 
         TicketAssignment ticketAssignment=ticketAssignmentRepository.findByTicket_TicketNoAndIsCurrentAgent(ticketAssignRequest.getTicketNo(),true)
                 .orElseThrow(()->new NotFoundException(TICKET_NOT_ASSIGNED));
@@ -100,5 +117,40 @@ public class TicketAssignmentService {
         ticketAssignmentRepository.save(ticketAssignment);
        return  assignTicketToAgent(ticketAssignRequest,assignedBy);
 
+    }
+    @Transactional
+    public SingleResponse reAssignAndUpdatePriority(String ticketNo,Long billingTeamAgentId) {
+        TicketAssignment ticketAssignment=ticketAssignmentRepository.findByTicket_TicketNoAndIsCurrentAgent(ticketNo,true)
+                .orElseThrow(()->new NotFoundException(TICKET_NOT_ASSIGNED));
+
+        Ticket ticket=ticketRepository.findByTicketNo(ticketNo)
+                .orElseThrow(()->new NotFoundException(TICKET+NOT_FOUND));
+
+        ticketAssignment.setCurrentAgent(false);
+        ticketAssignmentRepository.save(ticketAssignment);
+        ticket.setPriority(Priority.HIGH);
+        ticketRepository.save(ticket);
+        TicketAssignRequest ticketAssignRequest=TicketAssignRequest.builder()
+                .agentId(billingTeamAgentId)
+                .ticketNo(ticketNo)
+                .build();
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        Users assignedBy=(Users) authentication.getPrincipal();
+        return assignTicketToAgent(ticketAssignRequest,assignedBy);
+    }
+    @Transactional
+    public SingleResponse updateStatus( TicketAssignmentStatusUpdate ticketAssignmentStatusUpdate, Users user) {
+        TicketAssignment ticketAssignment=ticketAssignmentRepository.findById(ticketAssignmentStatusUpdate.getTicketAssignmentId())
+                .orElseThrow(()->new NotFoundException(TICKET_NOT_ASSIGNED));
+
+        if(Objects.equals(AGENT,user.getRole()) && !Objects.equals(user.getId(),ticketAssignment.getAgent().getId())){
+            throw new AuthorizationException(UNAUTHORIZED);
+        }
+
+        ticketAssignment.setTicketAssignmentStatus(ticketAssignmentStatusUpdate.getTicketAssignmentStatus());
+        ticketAssignmentRepository.save(ticketAssignment);
+        return SingleResponse.builder()
+                .message(TICKET_ASSIGNMENT_STATUS)
+                .build();
     }
 }

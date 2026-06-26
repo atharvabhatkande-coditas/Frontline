@@ -2,6 +2,7 @@ package com.coditas.frontline.dto.request;
 
 
 import com.coditas.frontline.enums.RoleType;
+import com.coditas.frontline.enums.TeamType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -19,5 +20,7 @@ public class InvitationRequest {
     private String email;
     @NotNull(message = NOT_NULL)
     private RoleType role;
+    @NotNull(message = NOT_NULL)
+    private TeamType team;
 
 }
