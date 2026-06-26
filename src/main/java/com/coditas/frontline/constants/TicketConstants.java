@@ -20,4 +20,9 @@ public final class TicketConstants {
     public static final String CHAT="Chat";
 
     public static final String AGENT_ASSIGNED_MAIL="Thank you for Escalating this Issue. We have Assigned a Agent who will look forward to solve your issue";
+
+
+    public static final String CHAT_OPENED="Chat Opened and Message sent successfully";
+    public static final String CHAT_NOT_FOUND="Chat Not found";
+    public static final String MESSAGE_SENT="Message Sent successfully";
 }

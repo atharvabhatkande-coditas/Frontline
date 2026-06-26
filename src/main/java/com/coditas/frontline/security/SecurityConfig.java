@@ -46,6 +46,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,TICKET).hasAnyRole(RoleType.AGENT.name(),RoleType.MANAGER.name(),RoleType.SUPER_ADMIN.name(),RoleType.CUSTOMER.name())
 
                         .requestMatchers(TICKET_RATING).hasAnyRole(RoleType.AGENT.name(),RoleType.MANAGER.name(),RoleType.SUPER_ADMIN.name(),RoleType.CUSTOMER.name())
+                        .requestMatchers(CHAT).hasAnyRole(RoleType.MANAGER.name(),RoleType.SUPER_ADMIN.name(),RoleType.AGENT.name(),RoleType.CUSTOMER.name())
+
 
                         //manager
                         .requestMatchers(HttpMethod.PATCH,TICKET).hasAnyRole(RoleType.MANAGER.name(),RoleType.SUPER_ADMIN.name())
@@ -56,7 +58,9 @@ public class SecurityConfig {
 
                         //agent
                         .requestMatchers(HttpMethod.GET,TICKET_ASSIGNMENT).hasAnyRole(RoleType.MANAGER.name(),RoleType.SUPER_ADMIN.name(),RoleType.AGENT.name())
-                        .requestMatchers(COPIOT).hasAnyRole(RoleType.MANAGER.name(),RoleType.SUPER_ADMIN.name(),RoleType.AGENT.name())
+                        .requestMatchers(COPILOT).hasAnyRole(RoleType.MANAGER.name(),RoleType.SUPER_ADMIN.name(),RoleType.AGENT.name())
+
+
 
 
                         .anyRequest().authenticated()

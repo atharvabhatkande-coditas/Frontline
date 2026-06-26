@@ -18,4 +18,6 @@ public interface TicketAssignmentRepository extends JpaRepository<TicketAssignme
 
 
     Page<TicketAssignment> findByAgent_Id(Long agentId, Pageable pageable);
+
+    Optional<TicketAssignment> findByTicket_TicketNoAndAgent_Username(String ticketNo, String username);
 }
