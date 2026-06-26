@@ -142,4 +142,11 @@ public class TicketService {
 
 
     }
+
+    public TicketResponseForDraft draftReply(String ticketNo) {
+       Ticket ticket=ticketRepository.findByTicketNo(ticketNo)
+               .orElseThrow(()->new NotFoundException(TICKET+NOT_FOUND));
+
+       return ticketMapper.ticketResponseForDraft(ticket);
+    }
 }

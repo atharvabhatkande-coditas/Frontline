@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,16 +28,17 @@ public class TicketAssignmentController {
 
     }
 
-    @GetMapping("/agent")
+    @GetMapping("/agent/{agentId}")
     public ResponseEntity<ApplicationResponse<PageResponse<AgentAssignedTaskResponse>>>getAssignedTasks(
             @AuthenticationPrincipal Users agent,
+            @PathVariable Long agentId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "id") String name,
             @RequestParam(defaultValue = "desc") String sortDirection
     ){
-        ApplicationResponse<PageResponse<AgentAssignedTaskResponse>>applicationResponse=new ApplicationResponse<>(ticketAssignmentService.getAssignedTasks(agent,page,size,name,sortDirection));
-        return ResponseEntity.status(HttpStatus.CREATED).body(applicationResponse);
+        ApplicationResponse<PageResponse<AgentAssignedTaskResponse>>applicationResponse=new ApplicationResponse<>(ticketAssignmentService.getAssignedTasks(agent,page,size,name,sortDirection,agentId));
+        return ResponseEntity.status(HttpStatus.OK).body(applicationResponse);
 
     }
 

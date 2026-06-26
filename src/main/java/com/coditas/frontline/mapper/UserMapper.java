@@ -26,6 +26,7 @@ public class UserMapper {
         return AgentResponse.builder()
                 .agentId(agent.getId())
                 .agentUsername(agent.getUsername())
+                .team(agent.getTeam())
                 .ticketsAssigned(assignedTaskResponses)
                 .build();
     }

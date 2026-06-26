@@ -2,6 +2,8 @@ package com.coditas.frontline.tools;
 
 import com.coditas.frontline.dto.response.AllTicketResponse;
 import com.coditas.frontline.dto.response.SingleResponse;
+import com.coditas.frontline.dto.response.TicketResponse;
+import com.coditas.frontline.dto.response.TicketResponseForDraft;
 import com.coditas.frontline.service.TicketAssignmentService;
 import com.coditas.frontline.service.TicketService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,12 @@ public class TicketTool {
     public SingleResponse reAssignAndUpdatePriority(String ticketNo ,Long billingTeamAgentId){
         return ticketAssignmentService.reAssignAndUpdatePriority(ticketNo,billingTeamAgentId);
     }
+
+    @Tool(name = "draftReply",description = "This will draft a reply explaining the fix for the issue.Giving proper explanation for the problem ")
+    public TicketResponseForDraft draftReply(String ticketNo){
+        return ticketService.draftReply(ticketNo);
+    }
+
 
 
 

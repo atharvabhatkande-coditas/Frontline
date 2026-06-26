@@ -2,6 +2,7 @@ package com.coditas.frontline.mapper;
 
 import com.coditas.frontline.dto.response.AllTicketResponse;
 import com.coditas.frontline.dto.response.TicketResponse;
+import com.coditas.frontline.dto.response.TicketResponseForDraft;
 import com.coditas.frontline.entity.Ticket;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +26,14 @@ public class TicketMapper {
                 .subject(ticket.getSubject())
                 .description(ticket.getDescription())
                 .ticketStatus(ticket.getTicketStatus())
+                .build();
+    }
+
+    public TicketResponseForDraft ticketResponseForDraft(Ticket ticket){
+        return TicketResponseForDraft.builder()
+                .subject(ticket.getSubject())
+                .description(ticket.getDescription())
+                .status(ticket.getTicketStatus())
                 .build();
     }
 }
