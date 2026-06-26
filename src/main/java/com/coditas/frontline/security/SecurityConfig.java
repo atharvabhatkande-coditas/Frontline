@@ -56,7 +56,7 @@ public class SecurityConfig {
 
                         //agent
                         .requestMatchers(HttpMethod.GET,TICKET_ASSIGNMENT).hasAnyRole(RoleType.MANAGER.name(),RoleType.SUPER_ADMIN.name(),RoleType.AGENT.name())
-
+                        .requestMatchers(COPIOT).hasAnyRole(RoleType.MANAGER.name(),RoleType.SUPER_ADMIN.name(),RoleType.AGENT.name())
 
 
                         .anyRequest().authenticated()

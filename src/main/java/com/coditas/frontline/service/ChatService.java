@@ -48,14 +48,16 @@ public class ChatService {
                 .isActive(true)
                 .build();
         chatRepository.save(newChat);
-
+/*
         History history=History.builder()
                 .role(role)
                 .message(chatOpenRequest.getMessage())
                 .chat(newChat)
                 .agent()
                 .customer()
-                .build();
+                .build();*/
+
+        return  null;
 
     }
 }

@@ -8,6 +8,7 @@ import com.coditas.frontline.dto.response.SingleResponse;
 import com.coditas.frontline.entity.Ticket;
 import com.coditas.frontline.entity.TicketAssignment;
 import com.coditas.frontline.entity.Users;
+import com.coditas.frontline.enums.Priority;
 import com.coditas.frontline.enums.TicketAssignmentStatus;
 import com.coditas.frontline.exception.AlreadyExistException;
 import com.coditas.frontline.exception.NotFoundException;
@@ -22,6 +23,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -91,7 +94,7 @@ public class TicketAssignmentService {
         return new PageResponse<>(assignedTaskResponses,page,size,ticketAssignmentPage.getTotalElements(),ticketAssignmentPage.getTotalPages(),ticketAssignmentPage.isLast());
     }
     @Transactional
-    public SingleResponse reAssignTicket(@Valid TicketAssignRequest ticketAssignRequest, Users assignedBy) {
+    public SingleResponse reAssignTicket(TicketAssignRequest ticketAssignRequest, Users assignedBy) {
 
         TicketAssignment ticketAssignment=ticketAssignmentRepository.findByTicket_TicketNoAndIsCurrentAgent(ticketAssignRequest.getTicketNo(),true)
                 .orElseThrow(()->new NotFoundException(TICKET_NOT_ASSIGNED));
@@ -100,5 +103,25 @@ public class TicketAssignmentService {
         ticketAssignmentRepository.save(ticketAssignment);
        return  assignTicketToAgent(ticketAssignRequest,assignedBy);
 
+    }
+    @Transactional
+    public SingleResponse reAssignAndUpdatePriority(String ticketNo,Long billingTeamAgentId) {
+        TicketAssignment ticketAssignment=ticketAssignmentRepository.findByTicket_TicketNoAndIsCurrentAgent(ticketNo,true)
+                .orElseThrow(()->new NotFoundException(TICKET_NOT_ASSIGNED));
+
+        Ticket ticket=ticketRepository.findByTicketNo(ticketNo)
+                .orElseThrow(()->new NotFoundException(TICKET+NOT_FOUND));
+
+        ticketAssignment.setCurrentAgent(false);
+        ticketAssignmentRepository.save(ticketAssignment);
+        ticket.setPriority(Priority.HIGH);
+        ticketRepository.save(ticket);
+        TicketAssignRequest ticketAssignRequest=TicketAssignRequest.builder()
+                .agentId(billingTeamAgentId)
+                .ticketNo(ticketNo)
+                .build();
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        Users assignedBy=(Users) authentication.getPrincipal();
+        return assignTicketToAgent(ticketAssignRequest,assignedBy);
     }
 }

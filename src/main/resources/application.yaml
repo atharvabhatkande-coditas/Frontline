@@ -1,6 +1,13 @@
 spring:
   application:
     name: frontline
+  ai:
+    openai:
+      api-key: ${API_KEY}
+      base-url: https://generativelanguage.googleapis.com/v1beta/openai
+      chat:
+        options:
+          model: gemini-2.5-flash
 
   mail:
     host: smtp.gmail.com

@@ -133,4 +133,13 @@ public class TicketService {
                 .message(TICKET_UPDATED)
                 .build();
     }
+
+    public List<AllTicketResponse> getCustomerHistory(Long customerId) {
+        Pageable pageable= PageRequest.of(0,5);
+        Page<Ticket>tickets=ticketRepository.findByCustomer_Id(customerId,pageable);
+
+        return tickets.stream().map(ticketMapper::allTicketResponses).toList();
+
+
+    }
 }

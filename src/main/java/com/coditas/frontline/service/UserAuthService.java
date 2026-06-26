@@ -91,6 +91,7 @@ public class UserAuthService {
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .isEnabled(true)
                 .role(invitation.getRole())
+                .team(invitation.getTeam())
                 .build();
         customUsersRepository.save(newUser);
 

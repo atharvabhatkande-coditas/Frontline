@@ -25,4 +25,7 @@ public final  class EndPoints {
     public static final String USER="/user/**";
 
 
+    public static final String COPIOT="/copilot/**";
+
+
 }
