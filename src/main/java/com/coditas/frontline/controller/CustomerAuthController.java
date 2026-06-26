@@ -2,7 +2,6 @@ package com.coditas.frontline.controller;
 
 import com.coditas.frontline.dto.request.CustomerRegisterRequest;
 import com.coditas.frontline.dto.request.LoginRequest;
-import com.coditas.frontline.dto.request.RegisterRequest;
 import com.coditas.frontline.dto.response.AccessTokenResponse;
 import com.coditas.frontline.dto.response.ApplicationResponse;
 import com.coditas.frontline.dto.response.LoginResponseTokens;

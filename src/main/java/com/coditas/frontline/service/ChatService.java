@@ -79,12 +79,12 @@ public class ChatService {
                 .build();
 
 
-        if(Objects.equals(role, "ROLE_"+RoleType.AGENT.name())){
+        if(Objects.equals(role, ROLE+RoleType.AGENT.name())){
             history.setCustomer(ticket.getCustomer());
             history.setAgent((Users)userDetails);
         }
 
-        if(Objects.equals(role, "ROLE_"+RoleType.CUSTOMER.name())){
+        if(Objects.equals(role, ROLE+RoleType.CUSTOMER.name())){
            history.setCustomer((Customer)userDetails );
            history.setAgent(ticketAssignment.getAgent());
 
@@ -116,12 +116,12 @@ public class ChatService {
                 .orElseThrow(()->new NotFoundException(TICKET_NOT_ASSIGNED));
 
 
-        if(Objects.equals(role,"ROLE_"+RoleType.AGENT.name())){
+        if(Objects.equals(role,ROLE+RoleType.AGENT.name())){
             history.setCustomer(chat.getTicket().getCustomer());
             history.setAgent((Users)userDetails);
         }
 
-        if(Objects.equals(role,"ROLE_"+RoleType.CUSTOMER.name())){
+        if(Objects.equals(role,ROLE+RoleType.CUSTOMER.name())){
             history.setCustomer((Customer)userDetails );
             history.setAgent(ticketAssignment.getAgent());
 
@@ -143,13 +143,13 @@ public class ChatService {
                 .orElseThrow(()->new NotFoundException(CHAT+NOT_FOUND));
         List<String> roles=userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
         String role= roles.getFirst();
-        if(Objects.equals(role,"ROLE_"+RoleType.CUSTOMER)){
+        if(Objects.equals(role,ROLE+RoleType.CUSTOMER)){
            Customer customer=(Customer) userDetails;
            if(!Objects.equals(customerId,customer.getId())){
                throw new AuthorizationException(UNAUTHORIZED);
            }
         }
-        if(Objects.equals(role,"ROLE_"+RoleType.AGENT)){
+        if(Objects.equals(role,ROLE+RoleType.AGENT)){
             TicketAssignment ticketAssignment=ticketAssignmentRepository.findByTicket_TicketNoAndAgent_Username(ticketNo,userDetails.getUsername())
                     .orElseThrow(()->new NotFoundException(TICKET_NOT_ASSIGNED));
             if(!Objects.equals(ticketNo,ticketAssignment.getTicket().getTicketNo())){
@@ -157,8 +157,6 @@ public class ChatService {
             }
 
         }
-
-
 
         Page<History>histories=historyRepository.findByChat_Id(chat.getId(),pageable);
 

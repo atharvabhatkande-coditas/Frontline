@@ -2,6 +2,7 @@ package com.coditas.frontline.service;
 
 import com.coditas.frontline.dto.request.EmailRequest;
 import com.coditas.frontline.dto.request.TicketAssignRequest;
+import com.coditas.frontline.dto.request.TicketAssignmentStatusUpdate;
 import com.coditas.frontline.dto.response.AgentAssignedTaskResponse;
 import com.coditas.frontline.dto.response.PageResponse;
 import com.coditas.frontline.dto.response.SingleResponse;
@@ -136,5 +137,20 @@ public class TicketAssignmentService {
         Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
         Users assignedBy=(Users) authentication.getPrincipal();
         return assignTicketToAgent(ticketAssignRequest,assignedBy);
+    }
+    @Transactional
+    public SingleResponse updateStatus( TicketAssignmentStatusUpdate ticketAssignmentStatusUpdate, Users user) {
+        TicketAssignment ticketAssignment=ticketAssignmentRepository.findById(ticketAssignmentStatusUpdate.getTicketAssignmentId())
+                .orElseThrow(()->new NotFoundException(TICKET_NOT_ASSIGNED));
+
+        if(Objects.equals(AGENT,user.getRole()) && !Objects.equals(user.getId(),ticketAssignment.getAgent().getId())){
+            throw new AuthorizationException(UNAUTHORIZED);
+        }
+
+        ticketAssignment.setTicketAssignmentStatus(ticketAssignmentStatusUpdate.getTicketAssignmentStatus());
+        ticketAssignmentRepository.save(ticketAssignment);
+        return SingleResponse.builder()
+                .message(TICKET_ASSIGNMENT_STATUS)
+                .build();
     }
 }

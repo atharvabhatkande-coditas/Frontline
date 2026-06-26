@@ -1,6 +1,7 @@
 package com.coditas.frontline.controller;
 
 import com.coditas.frontline.dto.request.TicketAssignRequest;
+import com.coditas.frontline.dto.request.TicketAssignmentStatusUpdate;
 import com.coditas.frontline.dto.response.AgentAssignedTaskResponse;
 import com.coditas.frontline.dto.response.ApplicationResponse;
 import com.coditas.frontline.dto.response.PageResponse;
@@ -45,6 +46,12 @@ public class TicketAssignmentController {
     @PostMapping("/escalate")
     public ResponseEntity<ApplicationResponse<SingleResponse>>reAssignTicket(@Valid @RequestBody TicketAssignRequest ticketAssignRequest, @AuthenticationPrincipal Users assignedBy){
         ApplicationResponse<SingleResponse>applicationResponse=new ApplicationResponse<>(ticketAssignmentService.reAssignTicket(ticketAssignRequest,assignedBy));
+        return ResponseEntity.status(HttpStatus.CREATED).body(applicationResponse);
+    }
+
+    @PatchMapping("/update-status")
+    public ResponseEntity<ApplicationResponse<SingleResponse>>updateStatus(@Valid @RequestBody TicketAssignmentStatusUpdate ticketAssignmentStatusUpdate, @AuthenticationPrincipal Users assignedBy){
+        ApplicationResponse<SingleResponse>applicationResponse=new ApplicationResponse<>(ticketAssignmentService.updateStatus(ticketAssignmentStatusUpdate,assignedBy));
         return ResponseEntity.status(HttpStatus.CREATED).body(applicationResponse);
     }
 
